@@ -1,11 +1,10 @@
-import { CommonMessageEventData as Message } from "oicq";
-import { sendType } from "../../../modules/message";
+import { InputParameter } from "@modules/command";
 import { music } from "../init";
 
-async function main( sendMessage: sendType, message: Message ): Promise<void> {
-	const name: string = message.raw_message;
+export async function main(
+	{ sendMessage, messageData }: InputParameter
+): Promise<void> {
+	const name: string = messageData.raw_message;
 	const result: string = await music.getMusic( name );
 	await sendMessage( result );
 }
-
-export { main }
