@@ -1,7 +1,9 @@
+import request, { Response as resp } from "request";
 import fetch from "node-fetch";
+import bot from "ROOT";
 
 const __API = {
-	MUSIC_QQ: "https://api.qq.jsososo.com/search/quick",
+	MUSIC_QQ: "https://c.y.qq.com/soso/fcgi-bin/client_search_cp",
 	MUSIC_163: "https://music.163.com/api/search/get"
 };
 
@@ -20,28 +22,36 @@ const HEADER = {
 }
 
 export async function getMusicQQ( name: string ): Promise<string> {
-	const URL: string = `${ __API.MUSIC_QQ }?key=${ encodeURI( name.trim() ) }`;
+	const URL: string = `${ __API.MUSIC_QQ }?ct=24&qqmusic_ver=1298&new_json=1`
+					  + `&t=0&aggr=1&cr=1&p=1&n=5&w=${ encodeURI( name.trim() ) }`;
 	
 	return new Promise( ( resolve ) => {
-		fetch( URL, {
+		request( {
 			method: "GET",
 			headers: HEADER.MUSIC_QQ,
-			mode: "cors",
-			credentials: "omit"
-		} )
-			.then( async ( result: Response ) => {
-				const resp: any = await result.json();
-				if ( resp.result === 100 ) {
-					if ( resp.data.song.count !== 0 ) {
-						const songID: string = resp.data.song.itemlist[0].id;
-						resolve( `[CQ:music,type=qq,id=${ songID }]` );
-					} else {
-						resolve( "没有搜索到歌曲" );
-					}
+			url: URL
+		}, ( error: any, response: resp, body: any ) => {
+			if ( error ) {
+				bot.logger.error( error );
+				resolve( "点歌出现异常错误，请联系持有者进行反馈" );
+				return;
+			}
+			try {
+				const reg: RegExp = /callback\((.*)\)/;
+				const b: string = ( <RegExpExecArray>reg.exec( body ) )[1];
+				const data = JSON.parse( b ).data;
+				
+				if ( data.song.curnum !== 0 ) {
+					const songID: string = data.song.list[0].id;
+					resolve( `[CQ:music,type=qq,id=${ songID }]` )
 				} else {
-					resolve( `API 错误: ${ resp.result }` );
+					resolve( "没有搜索到歌曲" );
 				}
-			} );
+			} catch ( err ) {
+				bot.logger.error( ( <Error>err ).stack );
+				resolve( "点歌出现异常错误，请联系持有者进行反馈" );
+			}
+		} );
 	} );
 }
 
