@@ -11,3 +11,4 @@
 | [genshin_rating](https://github.com/wickedll/genshin_rating) | 原神圣遗物评分插件 |
 | [chat](https://github.com/Extrwave/Chat-Plugins) | 聊天插件 |
 | [pic_search](https://github.com/MarryDream/pic_search) | 搜图插件 |
+| [hot-news](https://github.com/BennettChina/hot-news) | 热点新闻订阅插件 |
