@@ -22,7 +22,7 @@ const HEADER = {
 }
 
 export async function getMusicQQ( name: string ): Promise<string> {
-	const URL: string = `${ __API.MUSIC_QQ }?ct=24&qqmusic_ver=1298&new_json=1`
+	const URL: string = `${ __API.MUSIC_QQ }?qqmusic_ver=1298&new_json=1`
 					  + `&t=0&aggr=1&cr=1&p=1&n=5&w=${ encodeURI( name.trim() ) }`;
 	
 	return new Promise( ( resolve ) => {
