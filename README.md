@@ -12,3 +12,4 @@
 | [chat](https://github.com/Extrwave/Chat-Plugins) | 聊天插件 |
 | [pic_search](https://github.com/MarryDream/pic_search) | 搜图插件 |
 | [hot-news](https://github.com/BennettChina/hot-news) | 热点新闻订阅插件 |
+| [group_helper](https://github.com/BennettChina/group_helper) | 设置入群欢迎词插件 |
