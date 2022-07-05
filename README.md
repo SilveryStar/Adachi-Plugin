@@ -14,4 +14,4 @@
 | [hot-news](https://github.com/BennettChina/hot-news) | 热点新闻订阅插件 |
 | [group_helper](https://github.com/BennettChina/group_helper) | 设置入群欢迎词插件 |
 | [yysign](https://github.com/Extrwave/cloud_genshin) | 云原神签到 |
-
+| [mari-plugin](https://github.com/MarryDream/mari-plugin) | 实验性功能插件 |
