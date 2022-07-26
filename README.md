@@ -12,6 +12,8 @@
 | [chat](https://github.com/Extrwave/chat-plugins) | 聊天插件 |
 | [pic_search](https://github.com/MarryDream/pic_search) | 搜图插件 |
 | [hot-news](https://github.com/BennettChina/hot-news) | 热点新闻订阅插件 |
-| [group_helper](https://github.com/BennettChina/group_helper) | 设置入群欢迎词插件 |
+| [group_helper](https://github.com/BennettChina/group_helper) | 群助手插件 |
 | [yysign](https://github.com/Extrwave/cloud_genshin) | 云原神签到 |
 | [mari-plugin](https://github.com/MarryDream/mari-plugin) | 实验性功能插件 |
+| [setu-plugin](https://github.com/BennettChina/setu-plugin) | 涩图插件 |
+| [coser-image](https://github.com/BennettChina/coser-image) | 获取Coser图插件 |
