@@ -23,9 +23,9 @@ const HEADER = {
 
 export async function getMusicQQ( name: string ): Promise<string> {
 	const URL: string = `${ __API.MUSIC_QQ }?qqmusic_ver=1298&new_json=1`
-					  + `&t=0&aggr=1&cr=1&p=1&n=5&w=${ encodeURI( name.trim() ) }`;
+		+ `&t=0&aggr=1&cr=1&p=1&n=5&w=${ encodeURI( name.trim() ) }`;
 	
-	return new Promise( ( resolve ) => {
+	return new Promise( ( resolve, reject ) => {
 		request( {
 			method: "GET",
 			headers: HEADER.MUSIC_QQ,
@@ -33,7 +33,7 @@ export async function getMusicQQ( name: string ): Promise<string> {
 		}, ( error: any, response: resp, body: any ) => {
 			if ( error ) {
 				bot.logger.error( error );
-				resolve( "点歌出现异常错误，请联系持有者进行反馈" );
+				reject( error );
 				return;
 			}
 			try {
@@ -42,14 +42,14 @@ export async function getMusicQQ( name: string ): Promise<string> {
 				const data = JSON.parse( b ).data;
 				
 				if ( data.song.curnum !== 0 ) {
-					const songID: string = data.song.list[0].id;
-					resolve( `[CQ:music,type=qq,id=${ songID }]` )
+					const songID: string = data.song.list[0].id.toString();
+					resolve( songID );
 				} else {
-					resolve( "没有搜索到歌曲" );
+					reject( "没有搜索到歌曲" );
 				}
 			} catch ( err ) {
 				bot.logger.error( ( <Error>err ).stack );
-				resolve( "点歌出现异常错误，请联系持有者进行反馈" );
+				reject( err );
 			}
 		} );
 	} );
@@ -58,23 +58,28 @@ export async function getMusicQQ( name: string ): Promise<string> {
 export async function getMusic163( name: string ): Promise<string> {
 	const URL: string = `${ __API.MUSIC_163 }?s=${ encodeURI( name.trim() ) }&type=1&limit=1`;
 	
-	return new Promise( ( resolve ) => {
-		fetch( URL, {
+	let resp: any;
+	
+	try {
+		const result: Response = await fetch( URL, {
 			method: "GET",
 			headers: HEADER.MUSIC_163
-		} )
-			.then( async ( result: Response ) => {
-				const resp: any = await result.json();
-				if ( resp.code === 200 ) {
-					if ( resp.result.songs ) {
-						const songID: number = resp.result.songs[0].id;
-						resolve( `[CQ:music,type=163,id=${ songID }]` );
-					} else {
-						resolve( "没有搜索到歌曲" );
-					}
-				} else {
-					resolve( `API 错误: ${ resp.result }` );
-				}
-			} );
-	} );
+		} );
+		resp = await result.json();
+	} catch ( err ) {
+		bot.logger.error( `API 错误: ${ ( <Error>err ).stack }` )
+		throw `API 错误: ${ ( <Error>err ).message }`;
+	}
+	
+	if ( resp.code === 200 ) {
+		if ( resp.result.songs ) {
+			return resp.result.songs[0].id.toString();
+		} else {
+			throw "没有搜索到歌曲";
+		}
+	} else {
+		const errMsg: string = `API 错误: ${ resp.result }`;
+		bot.logger.error( errMsg )
+		throw errMsg;
+	}
 }
