@@ -27,6 +27,11 @@ const toggleSource: OrderConfig = {
 export async function init(): Promise<PluginSetting> {
 	return {
 		pluginName: "music",
-		cfgList: [ getMusic, toggleSource ]
+		cfgList: [ getMusic, toggleSource ],
+		repo: {
+			owner: "SilveryStar",
+			repoName: "Adachi-Plugin",
+			ref: "music"
+		}
 	};
 }
