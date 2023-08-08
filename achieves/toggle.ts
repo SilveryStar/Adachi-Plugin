@@ -1,10 +1,8 @@
-import { InputParameter } from "@modules/command";
 import { music } from "../init";
+import { defineDirective } from "@/modules/command";
 
-export async function main(
-	{ sendMessage, messageData }: InputParameter
-): Promise<void> {
+export default defineDirective( "order", async ( { sendMessage, messageData } ) => {
 	const opt: string = messageData.raw_message
 	await music.toggleMusicSource( opt );
 	await sendMessage( `音源已修改为：${ opt }` );
-}
+} );

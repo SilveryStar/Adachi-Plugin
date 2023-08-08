@@ -1,26 +1,18 @@
-import { InputParameter } from "@modules/command";
 import { music } from "../init";
-import { isGroupMessage } from "@modules/message";
-import { Friend, Group } from "icqq";
+import { defineDirective } from "@/modules/command";
+import { segment } from "@/modules/lib";
 
-export async function main(
-	{ sendMessage, messageData, client, logger }: InputParameter
-): Promise<void> {
-	const name: string = messageData.raw_message;
+export default defineDirective( "order", async ( { sendMessage, matchResult, client, logger } ) => {
+	const name = matchResult.match[0];
 	try {
 		const { id, platform } = await music.getMusic( name );
-		
-		const unit: Group | Friend = isGroupMessage( messageData ) ?
-			client.pickGroup( messageData.group_id ) :
-			client.pickFriend( messageData.sender.user_id );
-		
-		await unit.shareMusic( platform, id );
-	} catch ( err ) {
-		if ( typeof err === "string" ) {
-			await sendMessage( err );
+		await sendMessage( segment.music( id, platform ) );
+	} catch ( error ) {
+		if ( typeof error === "string" ) {
+			await sendMessage( error );
 		} else {
-			logger.error( ( <Error>err ).stack );
-			await sendMessage( "点歌出现异常错误，请联系持有者进行反馈" );
+			logger.error( ( <Error>error ).stack );
+			throw error;
 		}
 	}
-}
+} );

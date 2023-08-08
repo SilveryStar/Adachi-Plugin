@@ -1,11 +1,18 @@
-import request, { Response as resp } from "request";
-import fetch from "node-fetch";
-import bot from "ROOT";
+import { register } from "@/utils/request";
 
-const __API = {
+export const apis = {
 	MUSIC_QQ: "https://c.y.qq.com/soso/fcgi-bin/client_search_cp",
 	MUSIC_163: "https://music.163.com/api/search/get"
 };
+
+const { request: $https } = register( {
+	baseURL: "https://server.awbugl.top/botarcapi/",
+	headers: {
+		Authorization: "Bearer 0005000951383648da82be15ec3bd10b028fc0e0"
+	},
+	timeout: 30000,
+	responseType: "json",
+}, apis );
 
 const HEADER = {
 	MUSIC_QQ: {
@@ -22,64 +29,42 @@ const HEADER = {
 }
 
 export async function getMusicQQ( name: string ): Promise<string> {
-	const URL: string = `${ __API.MUSIC_QQ }?qqmusic_ver=1298&new_json=1`
-		+ `&t=0&aggr=1&cr=1&p=1&n=5&w=${ encodeURI( name.trim() ) }`;
-	
-	return new Promise( ( resolve, reject ) => {
-		request( {
-			method: "GET",
-			headers: HEADER.MUSIC_QQ,
-			url: URL
-		}, ( error: any, response: resp, body: any ) => {
-			if ( error ) {
-				bot.logger.error( error );
-				reject( error );
-				return;
-			}
-			try {
-				const reg: RegExp = /callback\((.*)\)/;
-				const b: string = ( <RegExpExecArray>reg.exec( body ) )[1];
-				const data = JSON.parse( b ).data;
-				
-				if ( data.song.curnum !== 0 ) {
-					const songID: string = data.song.list[0].id.toString();
-					resolve( songID );
-				} else {
-					reject( "没有搜索到歌曲" );
-				}
-			} catch ( err ) {
-				bot.logger.error( ( <Error>err ).stack );
-				reject( err );
-			}
-		} );
+	const { data: result } = await $https.MUSIC_QQ.get( {
+		qqmusic_ver: 1298,
+		new_json: 1,
+		t: 0,
+		aggr: 1,
+		cr: 1,
+		p: 1,
+		n: 5,
+		w: name
+	}, {
+		headers: HEADER.MUSIC_QQ
 	} );
+	const reg: RegExp = /callback\((.*)\)/;
+	const b: string = ( <RegExpExecArray>reg.exec( result ) )[1];
+	const data = JSON.parse( b ).data;
+	
+	if ( data.song.curnum !== 0 ) {
+		return data.song.list[0].id.toString();
+	} else {
+		throw `没有搜索到歌曲[${ name }]`;
+	}
 }
 
 export async function getMusic163( name: string ): Promise<string> {
-	const URL: string = `${ __API.MUSIC_163 }?s=${ encodeURI( name.trim() ) }&type=1&limit=1`;
+	const { data } = await $https.MUSIC_163.get( {
+		s: name,
+		type: 1,
+		limit: 1
+	}, {
+		headers: HEADER.MUSIC_163
+	} );
 	
-	let resp: any;
-	
-	try {
-		const result: Response = await fetch( URL, {
-			method: "GET",
-			headers: HEADER.MUSIC_163
-		} );
-		resp = await result.json();
-	} catch ( err ) {
-		bot.logger.error( `API 错误: ${ ( <Error>err ).stack }` )
-		throw `API 错误: ${ ( <Error>err ).message }`;
-	}
-	
-	if ( resp.code === 200 ) {
-		if ( resp.result.songs ) {
-			return resp.result.songs[0].id.toString();
-		} else {
-			throw "没有搜索到歌曲";
-		}
+	const songs: any[] | undefined = data.result.songs;
+	if ( songs ) {
+		return songs[0].id.toString();
 	} else {
-		const errMsg: string = `API 错误: ${ resp.result }`;
-		bot.logger.error( errMsg )
-		throw errMsg;
+		throw `没有搜索到歌曲[${ name }]`;
 	}
 }
