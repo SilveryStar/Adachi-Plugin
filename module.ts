@@ -29,5 +29,6 @@ export class Music {
 			id: songID,
 			platform: <MusicInfo["platform"]>[ "163", "qq" ][this.sourceID - 1]
 		};
+		
 	}
 }
