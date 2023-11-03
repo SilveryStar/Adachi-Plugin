@@ -19,3 +19,5 @@
 | [coser-image](https://github.com/BennettChina/coser-image)                 | 获取Coser图插件    |
 | [acg-search](https://github.com/KallkaGo/acg_search)                       | 以图识番插件        |
 | [sr_gacha_analysis](https://github.com/BennettChina/sr_gacha_analysis)     | 星铁抽卡分析插件      |
+| [mihoyo-login](https://github.com/BennettChina/mihoyo-login)               | 米游社登录插件      |
+| [mihoyo-cdk](https://github.com/BennettChina/mihoyo-cdk)                   | 米哈游CDK插件      |
