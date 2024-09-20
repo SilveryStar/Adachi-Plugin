@@ -24,3 +24,5 @@
 | [mihoyo-login](https://github.com/BennettChina/mihoyo-login)                 | 米游社登录插件                             | V3   |
 | [mihoyo-cdk](https://github.com/BennettChina/mihoyo-cdk)                     | 米哈游CDK插件                             | V3   |
 | [route-plugin](https://github.com/BennettChina/route-plugin)                 | 原神资源路线查询插件                        | V3   |
+| [awesome-tools](https://github.com/BennettChina/awesome-tools)               | 小工具插件                                | V3   |
+| [mihoyo-sign](https://github.com/BennettChina/mihoyo-sign)                   | 米游社签到插件                             | V3   |
